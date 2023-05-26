@@ -280,7 +280,7 @@ const generateImage = async (code) => {
         return false;
     };
 
-    const drawCrosshair = (context2D, globalData, codeData, centerPoint, mysteriousBoolean = true) => {
+    const drawCrosshair = (context2D, globalData, codeData, centerPoint) => {
         const outlines = codeData.outlines;
         const xywh = { xy: 0.5 * outlines.width, wh: 1 * outlines.width };
 
@@ -347,19 +347,15 @@ const generateImage = async (code) => {
                 length = xHairPartConfiguration.vertical.length;
             }
 
-            const [x, y] = [Math.floor(centerPoint[0] - width / 2), centerPoint[1] + offset];
+            const [x3, y3] = [Math.floor(centerPoint[0] - width / 2), centerPoint[1] + offset];
+            const [x4, y4] = [Math.floor(centerPoint[0] - width / 2), centerPoint[1] - offset - length - halfPartWidth];
 
-            drawLine(context2D, x, y, width, length, xywh, outlines, alpha);
-
-            if (mysteriousBoolean && !globalData.general.hideOnFire) {
-                const [x, y] = [Math.floor(centerPoint[0] - width / 2), centerPoint[1] - offset - length - halfPartWidth];
-
-                drawLine(context2D, x, y, width, length, xywh, outlines, alpha);
-            }
+            drawLine(context2D, x3, y3, width, length, xywh, outlines, alpha);
+            drawLine(context2D, x4, y4, width, length, xywh, outlines, alpha);
         }
     };
 
-    const drawCanvas = async (codeData, canvas, backgrounds, mysteriousBoolean = true) => {
+    const drawCanvas = async (codeData, canvas, backgrounds) => {
         const globalData = codeData;
         const context2D = canvas.getContext('2d');
 
@@ -375,7 +371,7 @@ const generateImage = async (code) => {
             context2D.drawImage(backgrounds[i], offsetX, offsetY, width, height);
 
             codeData = codeData[globalData.general.adsUsePrimary ? 'primary' : 'ads']
-            drawCrosshair(context2D, globalData, codeData, centerPoint, mysteriousBoolean);
+            drawCrosshair(context2D, globalData, codeData, centerPoint);
         }
 
         return canvas
@@ -394,8 +390,7 @@ const generateImage = async (code) => {
     const canvas = await drawCanvas(
         codeToConfiguration(code),
         createCanvas(width * 3, height * 3),
-        backgrounds,
-        true
+        backgrounds
     );
 
     return canvas.toBuffer('image/png');
