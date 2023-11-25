@@ -411,7 +411,7 @@ class CrosshairUtil {
 
             CrosshairUtil.drawCrosshair(
                 context2D,
-                codeData[globalData.general.adsUsePrimary ? 'primary' : 'ads'],
+                codeData['primary'],
                 centerPoint
             );
         }
