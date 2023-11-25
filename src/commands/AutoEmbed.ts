@@ -131,8 +131,7 @@ export default class extends Command {
             {
                 title: 'Remove Auto-Embed Channel',
                 description: `The channel <#${channelId}> was successfully **removed** as an auto-embed channel`,
-            },
-            true
+            }
         );
     }
 }
