@@ -43,7 +43,7 @@ export default class CrosshairCodeManager {
         }
 
         if (this.embeddedCodes.get(message.channelId)?.has(code)) {
-            await message.react(`🟰`);
+            await message.react(`🟰`).catch(() => null);
 
             return;
         }
@@ -52,7 +52,7 @@ export default class CrosshairCodeManager {
             this.embeddedCodes.set(message.channelId, new Set<string>());
         }
 
-        await message.reply({ files: [new AttachmentBuilder(await generateImage(code))] });
+        await message.reply({ files: [new AttachmentBuilder(await generateImage(code))] }).catch(() => null);
         this.embeddedCodes.get(message.channelId)!.add(code);
 
         setTimeout(() => {

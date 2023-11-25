@@ -6,6 +6,7 @@ import { AttachmentBuilder } from 'discord.js';
 export default class extends Command {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
         const code = interaction.options.getString('code', true);
+        const getAds = interaction.options.getBoolean('view-ads', false) ?? false;
 
         await interaction.deferReply({ ephemeral: true });
 
@@ -15,7 +16,7 @@ export default class extends Command {
             return;
         }
 
-        await interaction.editReply({ files: [new AttachmentBuilder(await generateImage(code))] });
+        await interaction.editReply({ files: [new AttachmentBuilder(await generateImage(code, getAds))] });
     }
 
     public override registerApplicationCommands(registry: Command.Registry) {
@@ -28,6 +29,11 @@ export default class extends Command {
                         .setName('code')
                         .setDescription(`The code of the crosshair you want to preview`)
                         .setRequired(true)
+                    )
+                    .addBooleanOption(option => option
+                        .setName('view-ads')
+                        .setDescription('Whether or not to show the "ADS" mode for the crosshair, if different than primary')
+                        .setRequired(false)
                     )
         );
     }

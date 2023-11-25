@@ -181,7 +181,7 @@ class CrosshairUtil {
         return match ? match[0] : undefined;
     }
 
-    public static async generateImage(code: string): Promise<Buffer> {
+    public static async generateImage(code: string, getAds = false): Promise<Buffer> {
         const width = 128;
         const height = 128;
         const backgrounds = await Promise.all(
@@ -193,6 +193,7 @@ class CrosshairUtil {
             createCanvas(width * 3, height * 3),
             width,
             height,
+            getAds,
             backgrounds
         );
 
@@ -296,10 +297,15 @@ class CrosshairUtil {
     private static drawCrosshair(
         context2D: CanvasRenderingContext2D,
         codeData: CrosshairConfigurationPrimaryAds,
+        text: string,
         centerPoint: number[]
     ): void {
         const { outlines } = codeData;
         const xywh = { xy: 0.5 * outlines.width, wh: outlines.width };
+
+        context2D.fillStyle = '#ffffff';
+        context2D.font = '16px sans-serif';
+        context2D.fillText(text, 10, 20);
 
         if (codeData.color === 8) {
             context2D.fillStyle = '#' + codeData.hexColor.value.slice(0, 6);
@@ -393,6 +399,7 @@ class CrosshairUtil {
         canvas: Canvas,
         width: number,
         height: number,
+        getAds: boolean,
         backgrounds: Image[]
     ): Promise<Canvas> {
         const globalData = codeData;
@@ -407,11 +414,13 @@ class CrosshairUtil {
             const [offsetX, offsetY] = [i % 3 * width, Math.floor(i / 3) * height];
             const centerPoint = [offsetX + width / 2, offsetY + height / 2];
 
+            context2D.globalAlpha = 1;
             context2D.drawImage(backgrounds[i], offsetX, offsetY, width, height);
 
             CrosshairUtil.drawCrosshair(
                 context2D,
-                codeData['primary'],
+                getAds && !globalData.general.adsUsePrimary ? codeData.ads : codeData.primary,
+                globalData.general.adsUsePrimary ? 'Primary // ADS' : (getAds ? 'ADS' : 'Primary'),
                 centerPoint
             );
         }
