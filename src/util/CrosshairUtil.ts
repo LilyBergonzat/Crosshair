@@ -304,7 +304,7 @@ class CrosshairUtil {
         const xywh = { xy: 0.5 * outlines.width, wh: outlines.width };
 
         context2D.fillStyle = '#ffffff';
-        context2D.font = '16px sans-serif';
+        context2D.font = '15px sans-serif';
         context2D.fillText(text, 10, 20);
 
         if (codeData.color === 8) {
