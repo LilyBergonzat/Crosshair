@@ -1,0 +1,43 @@
+{
+  "namespaces": [],
+  "tables": [
+    {
+      "columns": {
+        "channel_id": {
+          "name": "channel_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "The channel snowflake",
+          "mappedType": "string"
+        },
+        "guild_id": {
+          "name": "guild_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "The guild snowflake",
+          "mappedType": "string"
+        }
+      },
+      "name": "auto_embed_channel",
+      "indexes": [
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "channel_id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    }
+  ]
+}

@@ -1,17 +1,62 @@
 {
-  "name": "crosshair",
-  "version": "1.0.0",
-  "description": "Get previews of Valorant crosshair codes in your Discord server",
-  "main": "index.js",
-  "scripts": {
-    "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Ansy Wonhalf <lilywonhalf@gmail.com>",
-  "license": "ISC",
-  "dependencies": {
-    "canvas": "^2.11.2",
-    "discord.js": "^14.9.0",
-    "dotenv": "^16.0.3"
-  }
+    "name": "crosshair",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "npm run compile && npm run quickstart",
+        "quickstart": "node .",
+        "compile": "tsc -b src",
+        "clean-compile": "rm -rf dist && tsc -b src --clean && npm run compile",
+        "migrate": "npm run create-migrations && npm run apply-migrations",
+        "create-migrations": "npm run compile && cd dist && npx mikro-orm migration:create",
+        "apply-migrations": "npm run compile && cd dist && npx mikro-orm migration:up",
+        "watch": "npm run compile -- -w",
+        "test": "echo no"
+    },
+    "keywords": [],
+    "author": "Lily Wonhalf <lilywonhalf@gmail.com>",
+    "license": "ISC",
+    "imports": {
+        "#root/*": "./dist/*.js",
+        "#structures/*": "./dist/structures/*.js",
+        "#static/*": "./static/*"
+    },
+    "dependencies": {
+        "@lilywonhalf/pretty-logger": "^2.2.1",
+        "@mikro-orm/core": "^5.9.4",
+        "@mikro-orm/migrations": "^5.9.4",
+        "@mikro-orm/mysql": "^5.9.4",
+        "@mikro-orm/reflection": "^5.9.4",
+        "@sapphire/decorators": "^6.0.2",
+        "@sapphire/discord.js-utilities": "^7.1.2",
+        "@sapphire/framework": "^4.8.2",
+        "@sapphire/plugin-logger": "^3.0.7",
+        "@sapphire/plugin-subcommands": "^5.1.0",
+        "@sapphire/time-utilities": "^1.7.10",
+        "@sapphire/type": "^2.4.1",
+        "@sapphire/utilities": "^3.13.0",
+        "@types/node-fetch": "^2.6.9",
+        "canvas": "^2.11.2",
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.3.1",
+        "glob": "^8.0.3",
+        "mikro-orm": "^5.9.4",
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "@mikro-orm/cli": "^5.9.4",
+        "@sapphire/eslint-config": "^5.0.2",
+        "@sapphire/ts-config": "^5.0.0",
+        "@types/glob": "^8.1.0",
+        "@types/node": "^20.9.5",
+        "@typescript-eslint/eslint-plugin": "^6.12.0",
+        "@typescript-eslint/parser": "^6.12.0",
+        "eslint": "^8.54.0",
+        "eslint-plugin-jsdoc": "^46.9.0",
+        "ts-node": "^10.9.1",
+        "ts-purify": "^3.0.5",
+        "typescript": "^5.3.2",
+        "typescript-eslint": "^0.0.1-alpha.0"
+    }
 }
