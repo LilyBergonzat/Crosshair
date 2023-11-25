@@ -34,9 +34,11 @@ export default class CrosshairCodeManager {
         const channel = message.channel as GuildTextBasedChannel;
         const isChannelAutoEmbed = autoEmbedChannels.has(message.channelId);
         const isParentAutoEmbed = !!channel.parentId && autoEmbedChannels.has(channel.parentId);
+        const hasGrandParent = !!channel.parentId && !!channel.parent && !!channel.parent.parentId;
+        const isGrandParentAutoEmbed = hasGrandParent && autoEmbedChannels.has(channel.parent.parentId!);
         const code = getCode(message.content);
 
-        if (!isChannelAutoEmbed && !isParentAutoEmbed || !code || !testCode(code)) {
+        if (!isChannelAutoEmbed && !isParentAutoEmbed && !isGrandParentAutoEmbed || !code || !testCode(code)) {
             return;
         }
 

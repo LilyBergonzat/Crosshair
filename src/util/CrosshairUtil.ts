@@ -4,6 +4,7 @@ import Logger from '@lilywonhalf/pretty-logger';
 class CrosshairUtil {
     private static xHairExtraConfigurationParts: string[] = ['P', 'A', 'S'];
     private static hexCodeRegex: RegExp = /^[0-9A-F]{8}$/gu;
+    private static crosshairCodeRegex: RegExp = /0(?:;[pcs];\d){0,3}(?:;[PA](?:;(?:c|u|h|t|o|d|b|z|a|f|s|m|0b|0t|0l|0v|0g|0o|0a|0m|0f|0s|0e|1b|1t|1l|1v|1g|1o|1a|1m|1f|1s|1e);[0-9a-fA-F.]{0,20}){0,34}){1,2}(?:;S(?:;[bctdso];[0-9a-fA-F.]{0,20}){0,6})?/u;
     private static colours: string[] = [
         '#ffffff',
         '#00ff00',
@@ -86,7 +87,6 @@ class CrosshairUtil {
             dot: { enabled: true, width: 1, alpha: 0.75 },
         },
     };
-
 
     private static configurationPartConfigurations: Record<string, ConfigurationPartConfiguration> = {
         // [configurationKey, minBound, maxBound, isInteger, formatter]
@@ -172,11 +172,11 @@ class CrosshairUtil {
     }
 
     public static hasCode(string: string): boolean {
-        return /0[a-zA-Z0-9;.]*/u.test(string.trim());
+        return CrosshairUtil.crosshairCodeRegex.test(string.trim());
     }
 
     public static getCode(string: string): string | undefined {
-        const match = string.match(/0[a-zA-Z0-9;.]*/u);
+        const match = string.match(CrosshairUtil.crosshairCodeRegex);
 
         return match ? match[0] : undefined;
     }
@@ -445,7 +445,7 @@ interface CrosshairConfiguration {
     general: CrosshairConfigurationGeneral,
     primary: CrosshairConfigurationPrimaryAds,
     ads: CrosshairConfigurationPrimaryAds,
-    sniper: CrosshairConfigurationSniper
+    sniper: CrosshairConfigurationSniper,
 }
 
 interface CrosshairConfigurationGeneral {
