@@ -52,7 +52,10 @@ export default class CrosshairCodeManager {
             this.embeddedCodes.set(message.channelId, new Set<string>());
         }
 
-        await message.reply({ files: [new AttachmentBuilder(await generateImage(code))] }).catch(() => null);
+        await message.reply({ files: [new AttachmentBuilder(
+            await generateImage(code),
+            { name: 'crosshair.png', description: 'Crosshair code preview' }
+        )] }).catch(() => null);
         this.embeddedCodes.get(message.channelId)!.add(code);
 
         setTimeout(() => {

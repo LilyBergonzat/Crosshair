@@ -182,8 +182,8 @@ class CrosshairUtil {
     }
 
     public static async generateImage(code: string, getAds = false): Promise<Buffer> {
-        const width = 128;
-        const height = 128;
+        const width = 116;
+        const height = 116;
         const backgrounds = await Promise.all(
             Array(9).fill('').map((_, key) => loadImage(`./img/${key + 1}.png`))
         );

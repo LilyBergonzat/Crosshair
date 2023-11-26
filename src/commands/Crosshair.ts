@@ -16,7 +16,10 @@ export default class extends Command {
             return;
         }
 
-        await interaction.editReply({ files: [new AttachmentBuilder(await generateImage(code, getAds))] });
+        await interaction.editReply({ files: [new AttachmentBuilder(
+            await generateImage(code, getAds),
+            { name: 'crosshair.png', description: 'Crosshair code preview' }
+        )] });
     }
 
     public override registerApplicationCommands(registry: Command.Registry) {
