@@ -38,4 +38,14 @@ export default class AutoEmbedChannelRepository extends EntityRepository<AutoEmb
 
         this.autoEmbedChannels.get(guildId)!.delete(channelId);
     }
+
+    public async removeGuildChannels(guildId: Snowflake): Promise<void> {
+        await this.nativeDelete({ guildId });
+
+        if (!this.autoEmbedChannels.has(guildId)) {
+            return;
+        }
+
+        this.autoEmbedChannels.delete(guildId);
+    }
 }
