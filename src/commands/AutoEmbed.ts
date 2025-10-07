@@ -1,7 +1,6 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import Logger from '@lilywonhalf/pretty-logger';
 import { Command } from '@sapphire/framework';
-import { UseRequestContext } from '#structures/UseRequestContext';
 import InteractionUtil from '#root/util/InteractionUtil';
 
 export default class extends Command {
@@ -55,12 +54,11 @@ export default class extends Command {
         );
     }
 
-    @UseRequestContext()
     private async runList(interaction: ChatInputCommandInteraction): Promise<void> {
-        const { autoEmbedChannelRepository } = this.container.database;
-        const channels = [...(await autoEmbedChannelRepository.getGuildChannels(interaction.guildId!))].map(
-            channelId => `<#${channelId}>`
-        );
+        const channelsData = await this.container.prisma.autoembedchannel.findMany({ where: {
+            guildId: interaction.guildId!,
+        } });
+        const channels = channelsData ? channelsData.map(entity => `<#${entity.channelId}>`) : [];
         const areIs = channels.length > 1 ? 'are' : 'is';
         const plural = channels.length > 1 ? 's' : '';
 
@@ -75,13 +73,14 @@ export default class extends Command {
         );
     }
 
-    @UseRequestContext()
     private async runAdd(interaction: ChatInputCommandInteraction): Promise<void> {
-        const { autoEmbedChannelRepository } = this.container.database;
-        const channels = await autoEmbedChannelRepository.getGuildChannels(interaction.guildId!);
         const channelId = interaction.options.getChannel('channel', true).id;
+        const existingChannel = await this.container.prisma.autoembedchannel.findUnique({ where: {
+            guildId: interaction.guildId!,
+            channelId,
+        } });
 
-        if (channels.has(channelId)) {
+        if (existingChannel) {
             await InteractionUtil.reply(
                 interaction,
                 {
@@ -94,7 +93,10 @@ export default class extends Command {
             return;
         }
 
-        await autoEmbedChannelRepository.addChannel(interaction.guildId!, channelId);
+        await this.container.prisma.autoembedchannel.create({ data: {
+            channelId,
+            guildId: interaction.guildId!,
+        } });
 
         await InteractionUtil.reply(
             interaction,
@@ -105,13 +107,14 @@ export default class extends Command {
         );
     }
 
-    @UseRequestContext()
     private async runRemove(interaction: ChatInputCommandInteraction): Promise<void> {
-        const { autoEmbedChannelRepository } = this.container.database;
-        const channels = await autoEmbedChannelRepository.getGuildChannels(interaction.guildId!);
         const channelId = interaction.options.getChannel('channel', true).id;
+        const existingChannel = await this.container.prisma.autoembedchannel.findUnique({ where: {
+            guildId: interaction.guildId!,
+            channelId,
+        } });
 
-        if (!channels.has(channelId)) {
+        if (!existingChannel) {
             await InteractionUtil.reply(
                 interaction,
                 {
@@ -124,14 +127,14 @@ export default class extends Command {
             return;
         }
 
-        await autoEmbedChannelRepository.removeChannel(interaction.guildId!, channelId);
+        await this.container.prisma.autoembedchannel.delete({ where: {
+            channelId,
+            guildId: interaction.guildId!,
+        } });
 
-        await InteractionUtil.reply(
-            interaction,
-            {
-                title: 'Remove Auto-Embed Channel',
-                description: `The channel <#${channelId}> was successfully **removed** as an auto-embed channel`,
-            }
-        );
+        await InteractionUtil.reply(interaction, {
+            title: 'Remove Auto-Embed Channel',
+            description: `The channel <#${channelId}> was successfully **removed** as an auto-embed channel`,
+        });
     }
 }

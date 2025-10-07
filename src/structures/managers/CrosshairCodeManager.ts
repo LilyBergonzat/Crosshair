@@ -2,7 +2,6 @@ import { AttachmentBuilder, Collection, Snowflake } from 'discord.js';
 import type { GuildTextBasedChannel, Message } from 'discord.js';
 import { container } from '@sapphire/framework';
 import { generateImage, getCode, testCode } from '#root/util/CrosshairUtil';
-import { UseRequestContext } from '#structures/UseRequestContext';
 import { MINUTE } from '#root/util/DateTime';
 
 export default class CrosshairCodeManager {
@@ -18,24 +17,25 @@ export default class CrosshairCodeManager {
         CrosshairCodeManager.instance = this;
     }
 
-    @UseRequestContext()
     public async handleMessageCreate(message: Message): Promise<void> {
         if (!message.guildId) {
             return;
         }
 
-        const { autoEmbedChannelRepository } = container.database;
-        const autoEmbedChannels = await autoEmbedChannelRepository.getGuildChannels(message.guildId);
+        const autoEmbedChannels = await container.prisma.autoembedchannel.findMany({ where: {
+            guildId: message.guildId,
+        } });
 
-        if (!message.channel.isTextBased()) {
+        if (!message.channel.isTextBased() || !autoEmbedChannels || autoEmbedChannels.length < 1) {
             return;
         }
 
+        const autoEmbedChannelIds = autoEmbedChannels.map(entity => entity.channelId);
         const channel = message.channel as GuildTextBasedChannel;
-        const isChannelAutoEmbed = autoEmbedChannels.has(message.channelId);
-        const isParentAutoEmbed = !!channel.parentId && autoEmbedChannels.has(channel.parentId);
+        const isChannelAutoEmbed = autoEmbedChannelIds.includes(message.channelId);
+        const isParentAutoEmbed = !!channel.parentId && autoEmbedChannelIds.includes(channel.parentId);
         const hasGrandParent = !!channel.parentId && !!channel.parent && !!channel.parent.parentId;
-        const isGrandParentAutoEmbed = hasGrandParent && autoEmbedChannels.has(channel.parent.parentId!);
+        const isGrandParentAutoEmbed = hasGrandParent && autoEmbedChannelIds.includes(channel.parent.parentId!);
         const code = getCode(message.content);
 
         if (!isChannelAutoEmbed && !isParentAutoEmbed && !isGrandParentAutoEmbed || !code || !testCode(code)) {
