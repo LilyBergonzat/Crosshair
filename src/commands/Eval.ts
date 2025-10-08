@@ -1,23 +1,18 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 import Logger from '@lilywonhalf/pretty-logger';
 import { Command } from '@sapphire/framework';
 import EmbedBuilder from '#structures/EmbedBuilder';
-import InteractionUtil from '#root/util/InteractionUtil';
 
 export default class extends Command {
     public override async chatInputRun(interaction: ChatInputCommandInteraction): Promise<void> {
         if (interaction.user.id !== process.env.OWNER) {
-            await InteractionUtil.reply(
-                interaction,
-                {
-                    title: 'Unauthorized',
-                    description: 'You do not have the right to execute this command.',
-                },
-                true
-            );
+            await interaction.reply(`❌ You do not have the right to execute this command.`);
 
             return;
         }
+
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         let output;
         const embed = new EmbedBuilder()
@@ -41,7 +36,7 @@ export default class extends Command {
 
         embed.addFields({ name: 'Result', value: output.toString() });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.editReply({ embeds: [embed] });
     }
 
     public override registerApplicationCommands(registry: Command.Registry) {
