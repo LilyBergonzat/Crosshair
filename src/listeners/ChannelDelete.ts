@@ -14,11 +14,12 @@ export default class extends Listener {
 
         const { id, guildId } = channel as GuildChannel;
 
-        if (id && guildId) {
-            await this.container.prisma.autoembedchannel.delete({ where: {
-                channelId: id,
-                guildId,
-            } });
+        if (!id || !guildId) {
+            return;
         }
+
+        await this.container.prisma.autoEmbedChannel.delete({ where: { channelId: id, guildId } });
+        await this.container.prisma.gallery.delete({ where: { channelId: id } });
+        await this.container.prisma.galleryEntry.deleteMany({ where: { channelId: id } });
     }
 }

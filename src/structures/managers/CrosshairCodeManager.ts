@@ -22,7 +22,7 @@ export default class CrosshairCodeManager {
             return;
         }
 
-        const autoEmbedChannels = await container.prisma.autoembedchannel.findMany({ where: {
+        const autoEmbedChannels = await container.prisma.autoEmbedChannel.findMany({ where: {
             guildId: message.guildId,
         } });
 

@@ -33,6 +33,7 @@ export class Bootstrap {
             IntentsBitField.Flags.MessageContent,
             IntentsBitField.Flags.GuildMessages,
             IntentsBitField.Flags.Guilds,
+            IntentsBitField.Flags.GuildWebhooks,
         ];
     }
 

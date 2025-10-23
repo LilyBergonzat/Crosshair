@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { loadImage, createCanvas, CanvasRenderingContext2D, Canvas, Image } from 'canvas';
 import Logger from '@lilywonhalf/pretty-logger';
 
@@ -179,6 +180,16 @@ class CrosshairUtil {
         const match = string.match(CrosshairUtil.crosshairCodeRegex);
 
         return match ? match[0] : undefined;
+    }
+
+    public static codeToHash(code: string): string {
+        return createHash('sha256').update(
+            JSON.stringify(CrosshairUtil.codeToConfiguration(code))
+        ).digest('hex');
+    }
+
+    public static isCodeADSDifferent(code: string): boolean {
+        return !CrosshairUtil.codeToConfiguration(code).general.adsUsePrimary;
     }
 
     public static async generateImage(code: string, getAds = false): Promise<Buffer> {
@@ -500,4 +511,4 @@ interface CrosshairConfigurationOutlines {
     alpha: number,
 }
 
-export const { testCode, hasCode, getCode, generateImage } = CrosshairUtil;
+export const { testCode, hasCode, getCode, codeToHash, isCodeADSDifferent, generateImage } = CrosshairUtil;

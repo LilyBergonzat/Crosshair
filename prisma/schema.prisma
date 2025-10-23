@@ -13,9 +13,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model autoembedchannel {
+model AutoEmbedChannel {
   channelId String @id @map("channel_id") @db.VarChar(255)
   guildId   String @map("guild_id") @db.VarChar(255)
 
   @@map("auto_embed_channel")
+}
+
+model Gallery {
+  channelId String @id
+  guildId   String @unique
+  webhookId String @unique
+
+  galleryEntries GalleryEntry[]
+
+  @@map("gallery")
+}
+
+model GalleryEntry {
+  id           Int    @id @default(autoincrement())
+  channelId    String
+  postId       String @unique
+  originalCode String
+  hash         String
+
+  gallery Gallery @relation(fields: [channelId], references: [channelId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([channelId, hash])
+  @@map("gallery_entry")
 }

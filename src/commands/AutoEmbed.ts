@@ -24,7 +24,7 @@ export default class extends Subcommand {
     public async listSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const channelsData = await this.container.prisma.autoembedchannel.findMany({ where: {
+        const channelsData = await this.container.prisma.autoEmbedChannel.findMany({ where: {
             guildId: interaction.guildId!,
         } });
 
@@ -41,7 +41,7 @@ export default class extends Subcommand {
 
     public async addSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
         const channelId = interaction.options.getChannel('channel', true).id;
-        const existingChannel = await this.container.prisma.autoembedchannel.findUnique({ where: {
+        const existingChannel = await this.container.prisma.autoEmbedChannel.findUnique({ where: {
             guildId: interaction.guildId!,
             channelId,
         } });
@@ -52,7 +52,7 @@ export default class extends Subcommand {
             return;
         }
 
-        await this.container.prisma.autoembedchannel.create({ data: {
+        await this.container.prisma.autoEmbedChannel.create({ data: {
             channelId,
             guildId: interaction.guildId!,
         } });
@@ -62,7 +62,7 @@ export default class extends Subcommand {
 
     public async removeSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
         const channelId = interaction.options.getChannel('channel', true).id;
-        const existingChannel = await this.container.prisma.autoembedchannel.findUnique({ where: {
+        const existingChannel = await this.container.prisma.autoEmbedChannel.findUnique({ where: {
             guildId: interaction.guildId!,
             channelId,
         } });
@@ -73,7 +73,7 @@ export default class extends Subcommand {
             return;
         }
 
-        await this.container.prisma.autoembedchannel.delete({ where: {
+        await this.container.prisma.autoEmbedChannel.delete({ where: {
             channelId,
             guildId: interaction.guildId!,
         } });
