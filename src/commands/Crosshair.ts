@@ -21,8 +21,8 @@ export default class extends Subcommand {
         },
         {
             type: 'method',
-            name: 'publish',
-            chatInputRun: 'publishSubcommand',
+            name: 'post',
+            chatInputRun: 'postSubcommand',
         },
     ];
 
@@ -44,7 +44,7 @@ export default class extends Subcommand {
         )] });
     }
 
-    public async publishSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
+    public async postSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
         const code = interaction.options.getString('code', true);
 
         if (!testCode(code)) {
@@ -93,9 +93,9 @@ export default class extends Subcommand {
             ));
         }
 
-        const modal = new ModalBuilder().setCustomId('crosshair-publish').setTitle('Publish a Crosshair Code');
+        const modal = new ModalBuilder().setCustomId('crosshair-post').setTitle('Post a Crosshair Code');
         const name = new TextInputBuilder()
-            .setCustomId('crosshair-publish-name')
+            .setCustomId('crosshair-post-name')
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('High-Precision Crosshair')
             .setRequired(true);
@@ -104,7 +104,7 @@ export default class extends Subcommand {
             .setDescription(`Give a cool name to your crosshair so that it's easy to find in the list`)
             .setTextInputComponent(name);
         const description = new TextInputBuilder()
-            .setCustomId('crosshair-publish-description')
+            .setCustomId('crosshair-post-description')
             .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder('I found this crosshair on a random website. It helps a lot with the precision of my headshots!')
             .setRequired(true);
@@ -120,7 +120,7 @@ export default class extends Subcommand {
         const modalInteraction = await interaction.awaitModalSubmit({ time: 10 * MINUTE }).catch(() => null);
 
         if (!modalInteraction) {
-            await interaction.reply({ content: `❌ Publish cancelled by user.`, flags: MessageFlags.Ephemeral });
+            await interaction.reply({ content: `❌ Post cancelled by user.`, flags: MessageFlags.Ephemeral });
 
             return;
         }
@@ -139,11 +139,11 @@ export default class extends Subcommand {
         const post = await webhook.send({
             username: interaction.member.displayName,
             avatarURL: interaction.member.displayAvatarURL({ size: 2048 }),
-            threadName: modalInteraction.fields.getTextInputValue('crosshair-publish-name'),
-            content: modalInteraction.fields.getTextInputValue('crosshair-publish-description'),
+            threadName: modalInteraction.fields.getTextInputValue('crosshair-post-name'),
+            content: modalInteraction.fields.getTextInputValue('crosshair-post-description'),
             files,
         }).catch(error => {
-            this.container.logger.error(`Could not publish a code in guild ${interaction.guild.name} (${interaction.guildId}):`, error);
+            this.container.logger.error(`Could not post a code in guild ${interaction.guild.name} (${interaction.guildId}):`, error);
         });
 
         if (!post) {
@@ -170,7 +170,7 @@ export default class extends Subcommand {
             return;
         }
 
-        await modalInteraction.editReply(`✅ Crosshair published! ${post.url}`);
+        await modalInteraction.editReply(`✅ Crosshair posted! ${post.url}`);
     }
 
     public override registerApplicationCommands(registry: Command.Registry) {
@@ -194,8 +194,8 @@ export default class extends Subcommand {
                         )
                     )
                     .addSubcommand(subcommand => subcommand
-                        .setName('publish')
-                        .setDescription(`Publish your crosshair code to this server's gallery`)
+                        .setName('post')
+                        .setDescription(`Post your crosshair code to this server's gallery`)
                         .addStringOption(option => option
                             .setName('code')
                             .setDescription(`The code of the crosshair you want to preview`)
