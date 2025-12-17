@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(dir:*)",
+      "WebFetch(domain:discordjs.guide)",
+      "Bash(npm run compile:*)",
+      "Bash(npm i)",
+      "Bash(npx prisma generate:*)"
+    ]
+  },
+  "outputStyle": "Furry"
+}

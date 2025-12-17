@@ -2,15 +2,12 @@
     "name": "crosshair",
     "version": "1.0.0",
     "description": "",
-    "main": "dist/index.js",
+    "main": "dist/shard.js",
     "scripts": {
         "start": "npm run compile && npm run quickstart",
-        "quickstart": "node .",
+        "quickstart": "node dist/shard.js",
         "compile": "tsc -b src",
         "clean-compile": "rm -rf dist && tsc -b src --clean && npm run compile",
-        "migrate": "npm run create-migrations && npm run apply-migrations",
-        "create-migrations": "npm run compile && cd dist && npx mikro-orm migration:create",
-        "apply-migrations": "npm run compile && cd dist && npx mikro-orm migration:up",
         "watch": "npm run compile -- -w",
         "test": "echo no"
     },
