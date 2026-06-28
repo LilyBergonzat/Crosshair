@@ -13,7 +13,7 @@ export default class extends Listener {
 
         const gallery = await GalleryManager.getRawGallery(guild.id);
 
-        await this.container.prisma.gallery.delete({ where: { guildId: guild.id } });
+        await this.container.prisma.gallery.deleteMany({ where: { guildId: guild.id } });
 
         if (gallery) {
             await this.container.prisma.galleryEntry.deleteMany({ where: { channelId: gallery.channelId } });

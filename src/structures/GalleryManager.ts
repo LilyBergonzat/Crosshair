@@ -14,7 +14,7 @@ export class GalleryManager {
             : null;
 
         if (gallery && !channel) {
-            await container.prisma.gallery.delete({ where: { guildId: guild.id } });
+            await container.prisma.gallery.deleteMany({ where: { guildId: guild.id } });
         }
 
         return gallery && channel ? gallery : null;

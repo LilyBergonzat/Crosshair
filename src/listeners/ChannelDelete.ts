@@ -18,8 +18,8 @@ export default class extends Listener {
             return;
         }
 
-        await this.container.prisma.autoEmbedChannel.delete({ where: { channelId: id, guildId } });
-        await this.container.prisma.gallery.delete({ where: { channelId: id } });
+        await this.container.prisma.autoEmbedChannel.deleteMany({ where: { channelId: id, guildId } });
+        await this.container.prisma.gallery.deleteMany({ where: { channelId: id } });
         await this.container.prisma.galleryEntry.deleteMany({ where: { channelId: id } });
     }
 }

@@ -69,7 +69,7 @@ export default class extends Subcommand {
         if (!permissions.has(neededPermissions)) {
             await interaction.editReply(`
                 **❌ I do not have enough permissions to post in this channel.**
-                
+
                 Please make sure I have the permission to:
                 - Create forum posts
                 - Send messages in forum posts
@@ -122,9 +122,9 @@ export default class extends Subcommand {
                 # ⚠️ Warning!
                 > If you unlink the current gallery channel, **every single crosshair post will be unlinked** as well.
                 > This means even if you set it up again afterwards, this bot will have no knowledge of all the currently posted crosshairs and **will not be able to prevent duplicates anymore**.
-                
+
                 ## Only do this if you really wish to not use this forum channel as a crosshair gallery anymore at all, if you want to delete it, or if the channel already has no posts.
-                
+
                 This operation is **irreversible**.
                 Proceed anyways?
             `.replace(/\n +/gu, '\n'),
@@ -159,7 +159,7 @@ export default class extends Subcommand {
             return;
         }
 
-        await this.container.prisma.gallery.delete({ where: { guildId: interaction.guildId! } });
+        await this.container.prisma.gallery.deleteMany({ where: { guildId: interaction.guildId! } });
         await this.container.prisma.galleryEntry.deleteMany({ where: { channelId: existingChannel.id } });
 
         await interaction.editReply({

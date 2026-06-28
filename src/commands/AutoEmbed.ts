@@ -73,7 +73,7 @@ export default class extends Subcommand {
             return;
         }
 
-        await this.container.prisma.autoEmbedChannel.delete({ where: {
+        await this.container.prisma.autoEmbedChannel.deleteMany({ where: {
             channelId,
             guildId: interaction.guildId!,
         } });
