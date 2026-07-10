@@ -40,6 +40,8 @@ export default class extends Subcommand {
     }
 
     public async addSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
         const channelId = interaction.options.getChannel('channel', true).id;
         const existingChannel = await this.container.prisma.autoEmbedChannel.findUnique({ where: {
             guildId: interaction.guildId!,
@@ -61,6 +63,8 @@ export default class extends Subcommand {
     }
 
     public async removeSubcommand(interaction: Subcommand.ChatInputCommandInteraction<'cached'>): Promise<void> {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
         const channelId = interaction.options.getChannel('channel', true).id;
         const existingChannel = await this.container.prisma.autoEmbedChannel.findUnique({ where: {
             guildId: interaction.guildId!,
